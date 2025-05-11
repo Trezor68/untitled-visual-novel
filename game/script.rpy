@@ -1,12 +1,38 @@
-﻿define narrator = nvl_narrator
+﻿# Postavy ---Definování postav---
+define narrator = nvl_narrator
+define renko = Character("Renko Usami", color="#e90000")
+define maribel = Character("Maribel Hearn", color="#f1d900")
+define renkomom = Character("Renčina Mamka")
+define n = Character(None, kind=adv)
+
+# Audio ---Definování hudby---
+define audio.witch = "audio/BGM/Hagall_EccentricWitchsShop.mp3"
+define audio.rusted_chain = "audio/BGM/Hagall_RustedChain.ogg"
+define audio.durring_the_lesson = "audio/BGM/Durring-a-Lesson.mp3"
+define audio.promenade = "audio/BGM/Promenade.mp3"
+define audio.gfc1 = "audio/BGM/gfc1.mp3"
+
+# Pointy ---Budou důležité později ve hře---
+default mystery = 0
+default fantasy = 0
+
+
+# Postavy ---Body k postavám. Čím více bodů, tím víc o té postavě víme. (Takzvaně se budou přidávat informace na screenu o postavách)---
+default renko_usami = 0
+default maribel_hearn = 0
+default sumireko_usami = 0
+
+
 
 label start:
 
-    play music "Hagall_RustedChain.ogg"
+    scene bg universe
+
+    play music gfc1
 
     centered "Ahojky. Zdravím vás! "
     extend "Usami Renko jméno mé! "
-    extend "Jsem studentkou na vysoké škole! "
+    extend "Jsem už nějakej ten pátek studentkou vysoké školy. "
     extend "Chodím celkem na zvláštní obor, ale to je prozatím fuk. "
     extend "Miluju noční oblohu. "
     extend "Dokonce jsem schopná určit přesný čas při pohledu na hvězdy! "
@@ -15,11 +41,13 @@ label start:
     extend "Bohužel studium je těžké "
     extend "a nemám dostatek příležitostí se dostat ven z města. "
     extend "Takže se musím spokojit s pár malýma hvězdičkama. "
+    $ renko_usami = renko_usami + 1
 
     nvl clear
      
     centered "Chodím do třídy se svou nejlepší kamarádkou. "
     extend "Jmenuje se Maribel Hearn. "
+    $ maribel_hearn = maribel_hearn + 1
     extend "Celkem zajímavé jméno, nemyslíte? "
     extend "Zní hodně evropsky! "
     extend "S Maribel se bavíme prakticky od dětství a máme společné zájmy. "
@@ -55,7 +83,7 @@ label start:
     centered "Vždycky mě to fascinovalo. "
     extend "Chtěla jsem něco takového vidět. "
     extend "Něco fantastického. "
-    extend "Něco, co lidské oko nemůže zahlídnout."
+    extend "Něco, co lidské oko nemůže zahlídnout. "
     extend "Ale jak jsem už předtím řekla. "
     extend "Není to něco, "
     extend "co by mohl normální člověk vidět. "
@@ -70,6 +98,7 @@ label start:
     extend "Když jsme si prohlíželi deník snů, "
     extend "co tu po sobě nechala zakladatelka klubu, "
     extend "Usami Sumireko, "
+    $ sumireko_usami = sumireko_usami + 1
     extend "moje dávná předchůdkyně, "
     extend "věděli jsme, že to co jsme zažily nebyl jenom sen. "
     extend "Navíc, "
@@ -78,8 +107,10 @@ label start:
 
     nvl clear
 
-    centered "O čem to mluvím ptáte se? "
     stop music fadeout 2.0
+    scene black with fade
+
+    centered "O čem to mluvím ptáte se? "
     extend "Hehe. "
 
     nvl clear
@@ -88,6 +119,3 @@ label start:
 
 
     jump chapter1
-
-
-    

@@ -9,6 +9,11 @@ init offset = -1
 ## Styles
 ################################################################################
 
+style centered_text:
+    outlines [ (absolute(1), "#000", absolute(0), absolute(0)), (0, "#000", 2, 2) ]
+
+
+
 style default:
     properties gui.text_properties()
     language gui.language
@@ -31,7 +36,6 @@ style button:
 style button_text is gui_text:
     properties gui.text_properties("button")
     yalign 0.5
-
 
 style label_text is gui_text:
     properties gui.text_properties("label", accent=True)
@@ -249,14 +253,14 @@ screen quick_menu():
             xalign 0.5
             yalign 1.0
 
-            textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+            textbutton _("Zpátky") action Rollback()
+            textbutton _("Historie") action ShowMenu('history')
+            textbutton _("Přeskočit") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Q.Save") action QuickSave()
-            textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Prefs") action ShowMenu('preferences')
+            textbutton _("Uložit") action ShowMenu('save')
+            textbutton _("R.Uložit") action QuickSave()
+            textbutton _("R.Načti") action QuickLoad()
+            textbutton _("Preference") action ShowMenu('preferences')
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -297,38 +301,40 @@ screen navigation():
 
         if main_menu:
 
-            textbutton _("Start") action Start()
+            textbutton _("Začít") action Start()
 
         else:
 
-            textbutton _("History") action ShowMenu("history")
+            textbutton _("Postavy") action ShowMenu("characters")
 
-            textbutton _("Save") action ShowMenu("save")
+            textbutton _("Historie") action ShowMenu("history")
 
-        textbutton _("Load") action ShowMenu("load")
+            textbutton _("Uložit") action ShowMenu("save")
 
-        textbutton _("Preferences") action ShowMenu("preferences")
+        textbutton _("Načíst") action ShowMenu("load")
+
+        textbutton _("Preference") action ShowMenu("preferences")
 
         if _in_replay:
 
-            textbutton _("End Replay") action EndReplay(confirm=True)
+            textbutton _("Konec replaye") action EndReplay(confirm=True)
 
         elif not main_menu:
 
-            textbutton _("Main Menu") action MainMenu()
+            textbutton _("Hlavní Menu") action MainMenu()
 
-        textbutton _("About") action ShowMenu("about")
+        textbutton _("O programu") action ShowMenu("about")
 
         if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
 
             ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action ShowMenu("help")
+            textbutton _("Pomoc") action ShowMenu("help")
 
         if renpy.variant("pc"):
 
             ## The quit button is banned on iOS and unnecessary on Android and
             ## Web.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
+            textbutton _("Ukončit") action Quit(confirm=not main_menu)
 
 
 style navigation_button is gui_button
@@ -550,20 +556,20 @@ screen about():
     ## This use statement includes the game_menu screen inside this one. The
     ## vbox child is then included inside the viewport inside the game_menu
     ## screen.
-    use game_menu(_("About"), scroll="viewport"):
+    use game_menu(_("O programu"), scroll="viewport"):
 
         style_prefix "about"
 
         vbox:
 
             label "[config.name!t]"
-            text _("Version [config.version!t]\n")
+            text _("Verze [config.version!t]\n")
 
             ## gui.about is usually set in options.rpy.
             if gui.about:
                 text "[gui.about!t]\n"
 
-            text _("Made with {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
+            text _("Vytvořeno v {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
 
 
 style about_label is gui_label
@@ -587,19 +593,19 @@ screen save():
 
     tag menu
 
-    use file_slots(_("Save"))
+    use file_slots(_("Uložit"))
 
 
 screen load():
 
     tag menu
 
-    use file_slots(_("Load"))
+    use file_slots(_("Načíst"))
 
 
 screen file_slots(title):
 
-    default page_name_value = FilePageNameInputValue(pattern=_("Page {}"), auto=_("Automatic saves"), quick=_("Quick saves"))
+    default page_name_value = FilePageNameInputValue(pattern=_("Stránka {}"), auto=_("Automatic saves"), quick=_("Quick saves"))
 
     use game_menu(title):
 
@@ -641,7 +647,7 @@ screen file_slots(title):
 
                         add FileScreenshot(slot) xalign 0.5
 
-                        text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
+                        text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("prázdný slot")):
                             style "slot_time_text"
 
                         text FileSaveName(slot):
@@ -677,11 +683,11 @@ screen file_slots(title):
 
                 if config.has_sync:
                     if CurrentScreenName() == "save":
-                        textbutton _("Upload Sync"):
+                        textbutton _("Nahrát Sync"):
                             action UploadSync()
                             xalign 0.5
                     else:
-                        textbutton _("Download Sync"):
+                        textbutton _("Stáhnout Sync"):
                             action DownloadSync()
                             xalign 0.5
 
@@ -740,16 +746,16 @@ screen preferences():
 
                     vbox:
                         style_prefix "radio"
-                        label _("Display")
-                        textbutton _("Window") action Preference("display", "window")
-                        textbutton _("Fullscreen") action Preference("display", "fullscreen")
+                        label _("Zobrazení")
+                        textbutton _("Okno") action Preference("display", "window")
+                        textbutton _("Celá obrazovka") action Preference("display", "fullscreen")
 
                 vbox:
                     style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
-                    textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+                    label _("Přeskočit")
+                    textbutton _("Nepřečtený text") action Preference("skip", "toggle")
+                    textbutton _("Po volbách") action Preference("after choices", "toggle")
+                    textbutton _("Přechody") action InvertSelected(Preference("transitions", "toggle"))
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
@@ -762,25 +768,25 @@ screen preferences():
 
                 vbox:
 
-                    label _("Text Speed")
+                    label _("Rychlost textu")
 
                     bar value Preference("text speed")
 
-                    label _("Auto-Forward Time")
+                    label _("Čas automatického přehrávání")
 
                     bar value Preference("auto-forward time")
 
                 vbox:
 
                     if config.has_music:
-                        label _("Music Volume")
+                        label _("Hlasitost hudby")
 
                         hbox:
                             bar value Preference("music volume")
 
                     if config.has_sound:
 
-                        label _("Sound Volume")
+                        label _("Hlasitost zvuku")
 
                         hbox:
                             bar value Preference("sound volume")
@@ -790,7 +796,7 @@ screen preferences():
 
 
                     if config.has_voice:
-                        label _("Voice Volume")
+                        label _("Hlasitost hlasu (žádný tu není lmao)")
 
                         hbox:
                             bar value Preference("voice volume")
@@ -801,7 +807,7 @@ screen preferences():
                     if config.has_music or config.has_sound or config.has_voice:
                         null height gui.pref_spacing
 
-                        textbutton _("Mute All"):
+                        textbutton _("Všechno ať mlčí!"):
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
 
@@ -920,7 +926,7 @@ screen history():
                     substitute False
 
         if not _history_list:
-            label _("The dialogue history is empty.")
+            label _("Historie je prázdná")
 
 
 ## This determines what tags are allowed to be displayed on the history screen.
@@ -1608,3 +1614,14 @@ style slider_vbox:
 style slider_slider:
     variant "small"
     xsize 600
+
+screen languageselect():
+    vbox:
+        xalign 0.5 yalign 0.5
+        textbutton "Česky" action Language(None),Return()
+        textbutton "English" action Language("eng"),Return()
+
+
+label splashscreen:
+    if config.language == None:
+        call screen languageselect

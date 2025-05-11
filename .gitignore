@@ -1,6 +1,14 @@
 game/*.rpyc
 game/*.rpyb
+game/*/*.rpyb
+game/*/*.rpyc
+game/*/*/*.rpyb
+game/*/*/*.rpyc
+game/*/*/*/*.rpyb
+game/*/*/*/*.rpyc
 .vscode
 errors.txt
 log.txt
 traceback.txt
+progressive_download.txt
+/game/saves
